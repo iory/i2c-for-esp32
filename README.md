@@ -21,3 +21,24 @@ The expected packet format is detailed below:
 ```
 
 Feel free to expand on this by adding any installation, usage instructions or any other relevant details as required.
+
+## Python library
+
+
+We provide a Python library for exchanging bytearrays received in Python.
+
+You can install it using the following command:
+
+```
+pip install i2c-for-esp32
+```
+
+For usage instructions, please refer to:
+https://github.com/iory/i2c-for-esp32/blob/master/examples/radxa_with_atom_echo/radxa_i2c_audio_publisher.py
+
+## Sample
+
+### Radxa with Atom Echo
+
+A sample that communicates with radxa and atom echo to retrieve audio data from a microphone can be found at:
+https://github.com/iory/i2c-for-esp32/tree/master/examples/radxa_with_atom_echo
