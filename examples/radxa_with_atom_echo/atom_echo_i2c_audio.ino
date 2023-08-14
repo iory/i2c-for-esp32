@@ -6,7 +6,7 @@
 
 constexpr int SDA_PIN = 26;
 constexpr int SCL_PIN = 32;
-constexpr int I2C_SLAVE_ADDR = 0x08;
+constexpr int I2C_SLAVE_ADDR = 0x09;
 
 constexpr int CONFIG_I2S_BCK_PIN = 19;
 constexpr int CONFIG_I2S_LRCK_PIN = 33;
@@ -22,6 +22,44 @@ constexpr int I2S_BUFFER_SIZE = 1000;
 
 uint8_t buffer[I2S_BUFFER_SIZE];
 size_t transBytes;
+
+TaskHandle_t i2sTaskHandle = NULL;
+
+class RingBuffer {
+public:
+    RingBuffer(int size) : size(size), readIdx(0), writeIdx(0) {
+        buffer = new uint16_t[size];
+    }
+
+    ~RingBuffer() {
+        delete[] buffer;
+    }
+
+    int available() const {
+        int diff = writeIdx - readIdx;
+        if (diff >= 0) return diff;
+        return size + diff;
+    }
+
+    void write(uint16_t value) {
+        buffer[writeIdx] = value;
+        writeIdx = (writeIdx + 1) % size;
+    }
+
+    uint16_t read() {
+        uint16_t value = buffer[readIdx];
+        readIdx = (readIdx + 1) % size;
+        return value;
+    }
+
+private:
+    uint16_t* buffer;
+    int size;
+    volatile int readIdx;
+    volatile int writeIdx;
+};
+
+RingBuffer ringBuffer(I2S_BUFFER_SIZE * 4);
 
 bool InitI2SSpeakOrMic(int mode) {
     esp_err_t err = ESP_OK;
@@ -64,6 +102,17 @@ bool InitI2SSpeakOrMic(int mode) {
 }
 
 void requestEvent();
+
+void i2sTask(void* parameter) {
+    while (1) {
+        i2s_read(I2S_NUM_0, (char*)buffer, I2S_BUFFER_SIZE, &transBytes, portMAX_DELAY);
+        for (int i = 0; i < transBytes; i += 2) {
+            uint16_t* val = (uint16_t*)&buffer[i];
+            ringBuffer.write(*val);
+        }
+    }
+}
+
 void setup() {
     Serial.begin(115200);
 
@@ -73,7 +122,7 @@ void setup() {
     Serial.println(2);
 
     /* bool begin(int sda, int scl, int address, int rxBufferSize, int txBufferSize); */
-    bool res = WireSlave.begin(SDA_PIN, SCL_PIN, I2C_SLAVE_ADDR, 100, 2048);
+    bool res = WireSlave.begin(SDA_PIN, SCL_PIN, I2C_SLAVE_ADDR, 100, 4096);
 
     if (!res) {
         Serial.println("I2C slave init failed");
@@ -82,6 +131,8 @@ void setup() {
 
     WireSlave.onRequest(requestEvent);
     Serial.printf("Slave joined I2C bus with addr #%d\n", I2C_SLAVE_ADDR);
+
+    xTaskCreate(i2sTask, "i2sTask", 2048, NULL, 1, &i2sTaskHandle);
 }
 
 void loop() {
@@ -95,13 +146,9 @@ void loop() {
 }
 
 void requestEvent() {
-    for (int j = 0; j < 2; ++j) {
-        i2s_read(I2S_NUM_0, (char*)buffer, I2S_BUFFER_SIZE, &transBytes, portMAX_DELAY);
-
-        for (int i = 0; i < transBytes; i += 2) {
-            uint16_t* val = (uint16_t*)&buffer[i];
-            WireSlave.write((uint8_t)(*val & 0xFF));
-            WireSlave.write((uint8_t)((*val >> 8) & 0xFF));
-        }
+    while (ringBuffer.available() > 0) {
+        uint16_t value = ringBuffer.read();
+        WireSlave.write((uint8_t)(value & 0xFF));
+        WireSlave.write((uint8_t)((value >> 8) & 0xFF));
     }
 }
