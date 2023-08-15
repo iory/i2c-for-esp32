@@ -6,7 +6,7 @@
 
 constexpr int SDA_PIN = 26;
 constexpr int SCL_PIN = 32;
-constexpr int I2C_SLAVE_ADDR = 0x09;
+constexpr int I2C_SLAVE_ADDR = 0x41;
 
 constexpr int CONFIG_I2S_BCK_PIN = 19;
 constexpr int CONFIG_I2S_LRCK_PIN = 33;
@@ -114,12 +114,13 @@ void i2sTask(void* parameter) {
 }
 
 void setup() {
+    M5.begin(true, false, true);
+    M5.dis.clear();
+    M5.dis.drawpix(0, CRGB(255, 0, 0));
+
     Serial.begin(115200);
 
-    Serial.println(1);
     InitI2SSpeakOrMic(MODE_MIC);
-
-    Serial.println(2);
 
     /* bool begin(int sda, int scl, int address, int rxBufferSize, int txBufferSize); */
     bool res = WireSlave.begin(SDA_PIN, SCL_PIN, I2C_SLAVE_ADDR, 100, 4096);
@@ -133,6 +134,9 @@ void setup() {
     Serial.printf("Slave joined I2C bus with addr #%d\n", I2C_SLAVE_ADDR);
 
     xTaskCreate(i2sTask, "i2sTask", 2048, NULL, 1, &i2sTaskHandle);
+
+    M5.dis.clear();
+    M5.dis.drawpix(0, CRGB(255, 255, 255));
 }
 
 void loop() {
