@@ -1,7 +1,5 @@
 #!/usr/bin/env python3
 
-import time
-
 from audio_common_msgs.msg import AudioData
 import board
 import busio
