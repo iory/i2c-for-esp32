@@ -86,6 +86,56 @@ class WireUnpacker(object):
         self.index = 0
         return 1
 
+    def write_data_list(self, byte_data_list):
+        if byte_data_list[0] != self.frameStart \
+           or self.hasError() or self.totalLength >= self.buffer_size:
+            return 0
+
+        self.isPacketOpen = True
+        self.totalLength += 1
+
+        numBufferLength = byte_data_list[1]
+        if numBufferLength == 1:
+            self.ignoreLength = 5
+        elif numBufferLength == 2:
+            self.ignoreLength = 6
+        else:
+            self.ignoreLength = 7
+        self.totalLength += 1
+
+        self.expectedLength = 0
+        for i in range(numBufferLength):
+            self.expectedLength = (self.expectedLength << 8) \
+                + byte_data_list[2 + i]
+            self.totalLength += 1
+
+        if self.expectedLength > self.buffer_size:
+            self.isPacketOpen = False
+            self.lastError = self.INVALID_LENGTH
+            return 0
+
+        self.buffer[:self.expectedLength] = byte_data_list[
+            2 + numBufferLength:self.expectedLength + 2 + numBufferLength]
+        self.totalLength += self.expectedLength
+
+        if byte_data_list[self.expectedLength - 1] != self.frameEnd:
+            self.lastError = self.INVALID_LENGTH
+            return 0
+        self.totalLength += 1
+
+        self.payloadLength = self.totalLength - self.ignoreLength
+        print(2 + numBufferLength,
+              self.expectedLength + 2 + numBufferLength,
+              self.expectedLength, self.payloadLength)
+        crc8 = WireCrc()
+        crc = crc8.update(self.buffer, self.payloadLength)
+        if crc != self.buffer[self.index - 1]:
+            self.lastError = self.INVALID_CRC
+            return 0
+
+        self.index = 0
+        return self.totalLength
+
     def write_array(self, data):
         return sum(self.write(byte) for byte in data)
 
