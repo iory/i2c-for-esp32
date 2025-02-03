@@ -142,34 +142,40 @@ void TwoWireSlave::update() {
         if (user_onReceive) {
             user_onReceive(rxLength);
         }
-    } else if (user_onRequest) {
-        txIndex = 0;
-        txLength = 0;
-        packer_->reset();
-        user_onRequest();
-        packer_->end();
-
-        while (packer_->available()) {
-            txBuffer[txIndex] = packer_->read();
-            ++txIndex;
-        }
-        txLength = txIndex;
-
-        i2c_reset_tx_fifo(portNum);
-        i2c_slave_write_buffer(portNum, txBuffer, txLength, 0);
     }
 }
 
 size_t TwoWireSlave::write(uint8_t data) {
-    return packer_->write(data);
+    txIndex = 0;
+    txLength = 0;
+    packer_->reset();
+    packer_->write(data);
+    packer_->end();
+    while (packer_->available()) {
+        txBuffer[txIndex] = packer_->read();
+        ++txIndex;
+    }
+    txLength = txIndex;
+    i2c_reset_tx_fifo(portNum);
+    i2c_slave_write_buffer(portNum, txBuffer, txLength, 0);
+    return 1;
 }
 
 size_t TwoWireSlave::write(const uint8_t *data, size_t quantity) {
+    txIndex = 0;
+    txLength = 0;
+    packer_->reset();
     for (size_t i = 0; i < quantity; ++i) {
-        if (!write(data[i])) {
-            return i;
-        }
+        packer_->write(data[i]);
     }
+    packer_->end();
+    while (packer_->available()) {
+        txBuffer[txIndex] = packer_->read();
+        ++txIndex;
+    }
+    txLength = txIndex;
+    i2c_reset_tx_fifo(portNum);
+    i2c_slave_write_buffer(portNum, txBuffer, txLength, 0);
     return quantity;
 }
 

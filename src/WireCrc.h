@@ -21,26 +21,26 @@ public:
     WireCrc() {}
 
     /**
-   * Starts a new CRC8 calculation.
-   *
-   * @param data      byte array
-   * @param length    number of bytes
-   * @return uint8_t  crc
-   */
+     * Starts a new CRC8 calculation.
+     *
+     * @param data      byte array
+     * @param length    number of bytes
+     * @return uint8_t  crc
+     */
     uint8_t calc(uint8_t *data, unsigned int length) {
         seed = 0;
         return update(data, length);
     }
 
     /**
-   * Feed more data in the CRC calculation. calc() must
-   * be called the first time, before using update()
-   * multiple times.
-   *
-   * @param data      byte array
-   * @param length    number of bytes
-   * @return uint8_t  crc
-   */
+     * Feed more data in the CRC calculation. calc() must
+     * be called the first time, before using update()
+     * multiple times.
+     *
+     * @param data      byte array
+     * @param length    number of bytes
+     * @return uint8_t  crc
+     */
     uint8_t update(uint8_t *data, unsigned int length) {
         uint8_t crc = seed;
         uint8_t extract;

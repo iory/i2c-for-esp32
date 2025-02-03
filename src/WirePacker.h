@@ -35,21 +35,21 @@ public:
     ~WirePacker();
 
     /**
-   * Add a byte to the packet, only if end() was not called yet.
-   *
-   * @param data      byte to be added
-   * @return size_t   1 if the byte was added
-   */
+     * Add a byte to the packet, only if end() was not called yet.
+     *
+     * @param data      byte to be added
+     * @return size_t   1 if the byte was added
+     */
     size_t write(uint8_t data);
 
     /**
-   * Add a number of bytes to the packet. The number of bytes added
-   * may be different from quantity if the buffer becomes full.
-   *
-   * @param data      byte array to be added
-   * @param quantity  number of bytes to add
-   * @return size_t   number of bytes added
-   */
+     * Add a number of bytes to the packet. The number of bytes added
+     * may be different from quantity if the buffer becomes full.
+     *
+     * @param data      byte array to be added
+     * @param quantity  number of bytes to add
+     * @return size_t   number of bytes added
+     */
     size_t write(const uint8_t* data, size_t quantity);
 
     inline size_t write(const char* s) {
@@ -69,10 +69,10 @@ public:
     }
 
     /**
-   * Returns packet length so far
-   *
-   * @return size_t
-   */
+     * Returns packet length so far
+     *
+     * @return size_t
+     */
     size_t packetLength() const {
         if (isPacketOpen_) {
             return totalLength_ + 2;
@@ -81,31 +81,31 @@ public:
     }
 
     /**
-   * Closes the packet. After that, use avaiable() and read()
-   * to get the packet bytes.
-   *
-   */
+     * Closes the packet. After that, use avaiable() and read()
+     * to get the packet bytes.
+     *
+     */
     void end();
 
     /**
-   * Returns how many packet bytes are available to be read.
-   *
-   * @return size_t
-   */
+     * Returns how many packet bytes are available to be read.
+     *
+     * @return size_t
+     */
     size_t available();
 
     /**
-   * Read the next available packet byte. At each call,
-   * the value returned by available() will be decremented.
-   *
-   * @return int  -1 if there are no bytes to be read
-   */
+     * Read the next available packet byte. At each call,
+     * the value returned by available() will be decremented.
+     *
+     * @return int  -1 if there are no bytes to be read
+     */
     int read();
 
     /**
-   * Resets the packing process.
-   *
-   */
+     * Resets the packing process.
+     *
+     */
     void reset();
 
     uint32_t totalLength() const {
