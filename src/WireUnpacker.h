@@ -42,46 +42,46 @@ public:
     WireUnpacker(uint32_t bufferSize = 128);
     ~WireUnpacker();
     /**
-   * Collect a packet byte. Returns 0 if the byte was ignored
-   * or if there was an error (check with lastError()).
-   *
-   * The byte will be ignored if a start byte wasn't collected,
-   * or if a end byte was read. In the last case, if there wasn't
-   * errors, use available() and read() to read the payload.
-   *
-   * @param data      byte to be collected
-   * @return size_t   1 if the byte was collected
-   */
+     * Collect a packet byte. Returns 0 if the byte was ignored
+     * or if there was an error (check with lastError()).
+     *
+     * The byte will be ignored if a start byte wasn't collected,
+     * or if a end byte was read. In the last case, if there wasn't
+     * errors, use available() and read() to read the payload.
+     *
+     * @param data      byte to be collected
+     * @return size_t   1 if the byte was collected
+     */
     size_t write(uint8_t data);
 
     /**
-   * Collect multiple bytes. Calls write() for every byte.
-   *
-   * @param data      bytes to be collected
-   * @param quantity  number of bytes to collect
-   * @return size_t   number of bytes collected
-   */
+     * Collect multiple bytes. Calls write() for every byte.
+     *
+     * @param data      bytes to be collected
+     * @param quantity  number of bytes to collect
+     * @return size_t   number of bytes collected
+     */
     size_t write(const uint8_t* data, size_t quantity);
 
     /**
-   * Returns number of payload bytes available to be read.
-   * Will also return 0 if the packet wasn't processed.
-   *
-   * @return size_t
-   */
+     * Returns number of payload bytes available to be read.
+     * Will also return 0 if the packet wasn't processed.
+     *
+     * @return size_t
+     */
     size_t available();
 
     /**
-   * Read the next available payload byte. At each call,
-   * the value returned by available() will be decremented.
-   *
-   * @return int  -1 if there are no bytes to be read
-   */
+     * Read the next available payload byte. At each call,
+     * the value returned by available() will be decremented.
+     *
+     * @return int  -1 if there are no bytes to be read
+     */
     int read();
 
     /**
-   * Resets the unpacking process.
-   */
+     * Resets the unpacking process.
+     */
     void reset();
 
     bool hasError() const {
@@ -93,10 +93,10 @@ public:
     }
 
     /**
-   * Returns true if a start byte was read and more packet
-   * bytes are expected.
-   *
-   */
+     * Returns true if a start byte was read and more packet
+     * bytes are expected.
+     *
+     */
     bool isPacketOpen() const {
         return isPacketOpen_;
     }
