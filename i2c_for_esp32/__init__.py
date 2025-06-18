@@ -1,9 +1,9 @@
 # flake8: noqa
 
-import pkg_resources
+import importlib.metadata
 
 
-__version__ = pkg_resources.get_distribution("i2c-for-esp32").version
+__version__ = importlib.metadata.version("i2c-for-esp32")
 
 
 from i2c_for_esp32.wirepacker import WirePacker
