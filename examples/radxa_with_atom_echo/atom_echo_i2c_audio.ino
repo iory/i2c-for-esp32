@@ -27,13 +27,9 @@ TaskHandle_t i2sTaskHandle = NULL;
 
 class RingBuffer {
 public:
-    RingBuffer(int size) : size(size), readIdx(0), writeIdx(0) {
-        buffer = new uint16_t[size];
-    }
+    RingBuffer(int size) : size(size), readIdx(0), writeIdx(0) { buffer = new uint16_t[size]; }
 
-    ~RingBuffer() {
-        delete[] buffer;
-    }
+    ~RingBuffer() { delete[] buffer; }
 
     int available() const {
         int diff = writeIdx - readIdx;
@@ -66,17 +62,17 @@ bool InitI2SSpeakOrMic(int mode) {
 
     i2s_driver_uninstall(SPEAK_I2S_NUMBER);
     i2s_config_t i2s_config = {
-        .mode = (i2s_mode_t)(I2S_MODE_MASTER),
-        .sample_rate = I2S_SAMPLE_RATE,
-        .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,  // fixed at 12bit, stereo, MSB
-        .channel_format = I2S_CHANNEL_FMT_ALL_LEFT,
-        .communication_format = I2S_COMM_FORMAT_I2S,
-        .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
-        .dma_buf_count = I2S_BUFFER_COUNT,
-        .dma_buf_len = I2S_BUFFER_SIZE,
-        .use_apll = false,
-        .tx_desc_auto_clear = false,
-        .fixed_mclk = 0};
+            .mode = (i2s_mode_t)(I2S_MODE_MASTER),
+            .sample_rate = I2S_SAMPLE_RATE,
+            .bits_per_sample = I2S_BITS_PER_SAMPLE_16BIT,  // fixed at 12bit, stereo, MSB
+            .channel_format = I2S_CHANNEL_FMT_ALL_LEFT,
+            .communication_format = I2S_COMM_FORMAT_I2S,
+            .intr_alloc_flags = ESP_INTR_FLAG_LEVEL1,
+            .dma_buf_count = I2S_BUFFER_COUNT,
+            .dma_buf_len = I2S_BUFFER_SIZE,
+            .use_apll = false,
+            .tx_desc_auto_clear = false,
+            .fixed_mclk = 0};
     if (mode == MODE_MIC) {
         i2s_config.mode = (i2s_mode_t)(I2S_MODE_MASTER | I2S_MODE_RX | I2S_MODE_PDM);
     } else {

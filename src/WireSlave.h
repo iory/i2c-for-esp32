@@ -19,11 +19,11 @@
 #define TwoWireSlave_h
 #ifdef ARDUINO_ARCH_ESP32
 
-#include <Stream.h>
-#include <WirePacker.h>
-#include <WireUnpacker.h>
-#include <driver/i2c.h>
-#include <stdint.h>
+    #include <Stream.h>
+    #include <WirePacker.h>
+    #include <WireUnpacker.h>
+    #include <driver/i2c.h>
+    #include <stdint.h>
 
 class TwoWireSlave : public Stream {
 public:
@@ -41,21 +41,11 @@ public:
     int peek(void);
     void flush(void);
 
-    inline size_t write(const char* s) {
-        return write((uint8_t*)s, strlen(s));
-    }
-    inline size_t write(unsigned long n) {
-        return write((uint8_t)n);
-    }
-    inline size_t write(long n) {
-        return write((uint8_t)n);
-    }
-    inline size_t write(unsigned int n) {
-        return write((uint8_t)n);
-    }
-    inline size_t write(int n) {
-        return write((uint8_t)n);
-    }
+    inline size_t write(const char* s) { return write((uint8_t*)s, strlen(s)); }
+    inline size_t write(unsigned long n) { return write((uint8_t)n); }
+    inline size_t write(long n) { return write((uint8_t)n); }
+    inline size_t write(unsigned int n) { return write((uint8_t)n); }
+    inline size_t write(int n) { return write((uint8_t)n); }
 
     void onReceive(void (*)(int));
     void onRequest(void (*)());

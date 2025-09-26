@@ -46,18 +46,14 @@ public:
     /**
      * Delay in milliseconds between retry attempts
      */
-    void setRetryDelay(unsigned long retryDelay) {
-        retryDelay_ = retryDelay;
-    }
+    void setRetryDelay(unsigned long retryDelay) { retryDelay_ = retryDelay; }
 
     /**
      * Number of read attempts before giving up with an error status
      *
      * @param attempts
      */
-    void setAttempts(uint8_t attempts) {
-        maxAttempts_ = attempts;
-    }
+    void setAttempts(uint8_t attempts) { maxAttempts_ = attempts; }
 
     /**
      * @brief Requests data from an ESP32 I2C slave, packed with WirePacker.
@@ -72,9 +68,7 @@ public:
      */
     bool request(uint8_t address = 0);
 
-    Status lastStatus() const {
-        return lastStatus_;
-    }
+    Status lastStatus() const { return lastStatus_; }
 
     String lastStatusToString() const;
 

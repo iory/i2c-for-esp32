@@ -3,14 +3,20 @@
  *
  */
 #ifdef ARDUINO_ARCH_ESP32
-#include "WireSlave.h"
+    #include "WireSlave.h"
 
-#include <Arduino.h>
-#include <driver/i2c.h>
+    #include <Arduino.h>
+    #include <driver/i2c.h>
 
 TwoWireSlave::TwoWireSlave(uint8_t bus_num)
-    : num(bus_num & 1), portNum(i2c_port_t(bus_num & 1)), sda(-1), scl(-1), rxIndex(0), rxLength(0), txIndex(0), txLength(0) {
-}
+    : num(bus_num & 1),
+      portNum(i2c_port_t(bus_num & 1)),
+      sda(-1),
+      scl(-1),
+      rxIndex(0),
+      rxLength(0),
+      txIndex(0),
+      txLength(0) {}
 
 TwoWireSlave::~TwoWireSlave() {
     delete packer_;
@@ -72,8 +78,7 @@ bool TwoWireSlave::begin(int sda, int scl, int address) {
         return false;
     }
 
-    res = i2c_driver_install(portNum,
-                             config.mode,
+    res = i2c_driver_install(portNum, config.mode,
                              2 * unpacker_->bufferSize(),  // rx buffer length
                              2 * packer_->bufferSize(),    // tx buffer length
                              0);
@@ -179,9 +184,7 @@ size_t TwoWireSlave::write(const uint8_t *data, size_t quantity) {
     return quantity;
 }
 
-int TwoWireSlave::available(void) {
-    return rxLength - rxIndex;
-}
+int TwoWireSlave::available(void) { return rxLength - rxIndex; }
 
 int TwoWireSlave::read(void) {
     int value = -1;
@@ -209,13 +212,9 @@ void TwoWireSlave::flush(void) {
     i2c_reset_tx_fifo(portNum);
 }
 
-void TwoWireSlave::onReceive(void (*function)(int)) {
-    user_onReceive = function;
-}
+void TwoWireSlave::onReceive(void (*function)(int)) { user_onReceive = function; }
 
-void TwoWireSlave::onRequest(void (*function)(void)) {
-    user_onRequest = function;
-}
+void TwoWireSlave::onRequest(void (*function)(void)) { user_onRequest = function; }
 
 TwoWireSlave WireSlave = TwoWireSlave(0);
 TwoWireSlave WireSlave1 = TwoWireSlave(1);
