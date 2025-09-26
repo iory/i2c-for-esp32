@@ -1,5 +1,14 @@
+# Based on Open3D's .clang-format file
+# https://github.com/isl-org/Open3D/blob/main/.clang-format
 BasedOnStyle: Google
-ColumnLimit: 0
-AlignTrailingComments: true
 IndentWidth: 4
+ColumnLimit: 100
+UseTab: Never
+Standard: c++17
+ContinuationIndentWidth: 8
 AccessModifierOffset: -4
+BinPackParameters: false
+SortIncludes: true
+IndentPPDirectives: BeforeHash
+InsertNewlineAtEOF: true
+DerivePointerAlignment: true

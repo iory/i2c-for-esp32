@@ -52,21 +52,11 @@ public:
      */
     size_t write(const uint8_t* data, size_t quantity);
 
-    inline size_t write(const char* s) {
-        return write((uint8_t*)s, strlen(s));
-    }
-    inline size_t write(unsigned long n) {
-        return write((uint8_t)n);
-    }
-    inline size_t write(long n) {
-        return write((uint8_t)n);
-    }
-    inline size_t write(unsigned int n) {
-        return write((uint8_t)n);
-    }
-    inline size_t write(int n) {
-        return write((uint8_t)n);
-    }
+    inline size_t write(const char* s) { return write((uint8_t*)s, strlen(s)); }
+    inline size_t write(unsigned long n) { return write((uint8_t)n); }
+    inline size_t write(long n) { return write((uint8_t)n); }
+    inline size_t write(unsigned int n) { return write((uint8_t)n); }
+    inline size_t write(int n) { return write((uint8_t)n); }
 
     /**
      * Returns packet length so far
@@ -108,13 +98,9 @@ public:
      */
     void reset();
 
-    uint32_t totalLength() const {
-        return totalLength_;
-    }
+    uint32_t totalLength() const { return totalLength_; }
 
-    uint32_t bufferSize() const {
-        return bufferSize_;
-    }
+    uint32_t bufferSize() const { return bufferSize_; }
 
 private:
     const uint8_t frameStart_ = 0x02;

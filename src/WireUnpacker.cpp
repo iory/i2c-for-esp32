@@ -6,8 +6,7 @@
 
 #include "WireCrc.h"
 
-WireUnpacker::WireUnpacker(uint32_t bufferSize)
-    : bufferSize_(bufferSize) {
+WireUnpacker::WireUnpacker(uint32_t bufferSize) : bufferSize_(bufferSize) {
     buffer_ = (uint8_t *)malloc(sizeof(uint8_t) * bufferSize_);
     if (buffer_ == nullptr) {
         bufferSize_ = 0;  // handle allocation error
@@ -15,9 +14,7 @@ WireUnpacker::WireUnpacker(uint32_t bufferSize)
     reset();
 }
 
-WireUnpacker::~WireUnpacker() {
-    free(buffer_);
-}
+WireUnpacker::~WireUnpacker() { free(buffer_); }
 
 size_t WireUnpacker::write(uint8_t data) {
     if (totalLength_ >= bufferSize_ || hasError()) {

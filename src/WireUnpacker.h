@@ -33,11 +33,7 @@
 
 class WireUnpacker {
 public:
-    enum Error : char {
-        NONE = 0,
-        INVALID_CRC,
-        INVALID_LENGTH
-    };
+    enum Error : char { NONE = 0, INVALID_CRC, INVALID_LENGTH };
 
     WireUnpacker(uint32_t bufferSize = 128);
     ~WireUnpacker();
@@ -84,30 +80,20 @@ public:
      */
     void reset();
 
-    bool hasError() const {
-        return lastError_ != Error::NONE;
-    }
+    bool hasError() const { return lastError_ != Error::NONE; }
 
-    Error lastError() const {
-        return lastError_;
-    }
+    Error lastError() const { return lastError_; }
 
     /**
      * Returns true if a start byte was read and more packet
      * bytes are expected.
      *
      */
-    bool isPacketOpen() const {
-        return isPacketOpen_;
-    }
+    bool isPacketOpen() const { return isPacketOpen_; }
 
-    uint32_t totalLength() const {
-        return totalLength_;
-    }
+    uint32_t totalLength() const { return totalLength_; }
 
-    uint32_t bufferSize() const {
-        return bufferSize_;
-    }
+    uint32_t bufferSize() const { return bufferSize_; }
 
 private:
     const uint8_t frameStart_ = 0x02;
